@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/argon2"
 	"encoding/hex"
 	"os"
+	"io/ioutil"
 )
 
 func main() {
@@ -13,6 +14,7 @@ func main() {
 	passwordFlag := flag.String("p", "", "Password for Argon2id hashing.")
 	saltFlag := flag.String("s", "", "Salt for Argon2id hashing.")
 	lengthFlag := flag.Int("l", 32, "Key length for Argon2id hashing.")
+	fileFlag := flag.String("w", "", "File to write the output.")
 
 	// Set up a usage message
 	flag.Usage = func() {
@@ -34,6 +36,14 @@ func main() {
 	result := hex.EncodeToString(key)
 
 	// Output the resulting key
-	fmt.Println(result)
+	if *fileFlag != "" {
+		err := ioutil.WriteFile(*fileFlag, []byte(result), 0644)
+		if err != nil {
+			fmt.Println("Error writing to file:", err)
+			os.Exit(1)
+		}
+	} else {
+		fmt.Println(result)
+	}
 }
 
