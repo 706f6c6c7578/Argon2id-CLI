@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"os"
 	"io/ioutil"
+	"path/filepath"
 )
 
 func main() {
@@ -37,7 +38,12 @@ func main() {
 
 	// Output the resulting key
 	if *fileFlag != "" {
-		err := ioutil.WriteFile(*fileFlag, []byte(result), 0644)
+		dir, err := os.Getwd()
+		if err != nil {
+			fmt.Printf("Failed to get current directory: %v\n", err)
+			return
+		}
+		err = ioutil.WriteFile(filepath.Join(dir, *fileFlag), []byte(result), 0600)
 		if err != nil {
 			fmt.Println("Error writing to file:", err)
 			os.Exit(1)
